@@ -3,7 +3,7 @@ class Api::V1::TrackingSleepsController < ApplicationController
   before_action :set_tracking_sleep, only: [:show, :update, :destroy]
 
   def index
-    json_response(@user.tracking_sleeps.order(created_at: :desc))
+    json_response(TrackingService.new(params).get_list)
   end
 
   # def show

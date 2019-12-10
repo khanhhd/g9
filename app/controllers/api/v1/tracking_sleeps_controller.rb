@@ -6,10 +6,6 @@ class Api::V1::TrackingSleepsController < ApplicationController
     json_response(TrackingService.new(params).get_list)
   end
 
-  # def show
-  #   json_response(@tracking_sleep)
-  # end
-
   private
   def tracking_sleep_params
     params.permit(:start_time, :end_time, :user_id)

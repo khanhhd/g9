@@ -1,4 +1,5 @@
 class UserService
+  # TODO: Using localization instead
   VALID_ACTION = ["sleep", "wakeup"]
   INVALID_ACTION_MSG = "Your action is not valid"
 

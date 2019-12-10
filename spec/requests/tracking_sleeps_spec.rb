@@ -6,7 +6,8 @@ RSpec.describe 'TrackingSleep API', type: :request do
   let(:user_id){user.id}
 
   describe "GET /api/v1/users/:user_id/tracking_sleeps" do
-    before {get "/api/v1/users/#{user_id}/tracking_sleeps" }
+    let(:params){{}}
+    before {get "/api/v1/users/#{user_id}/tracking_sleeps", params: params}
 
     context "when user does not exist" do
       let!(:user_id) {0}
@@ -16,19 +17,37 @@ RSpec.describe 'TrackingSleep API', type: :request do
       end
     end
 
-    context "when user exists" do
-      context "when tracking_sleep exist" do
-        it "should return tracking_sleep of user" do
-          expect(body_json.size).to eq 5
-        end
+    context "when params is not valid" do
+      it "should return empty" do
+        expect(body_json).to be_empty
       end
+    end
+    context "when params is valid" do
+      let(:params){{filter: "me"}}
+      it "should return all current user's sleep activities" do
+        expect(body_json.size).to eq 5
+      end
+    end
 
-      context "when tracking_sleep does not exist" do
-        let!(:other_user) {create(:user)}
-        let(:user_id){other_user.id}
-        it "should return empty json" do
-          expect(body_json).to be_empty
+    context "when user does not have friend" do
+      let(:params){{filter: "friend", friend_id: 2}}
+      it "should return empty array" do
+        expect(body_json).to be_empty
+      end
+    end
+
+    context "when user does have friend" do
+      let(:friend) {create(:user)}
+      let(:params){{filter: "friend", friend_id: friend.id}}
+      before do
+        user.follow friend
+        20.times.each do
+          friend.sleeping? ? friend.wakeup : friend.sleep
         end
+        get "/api/v1/users/#{user_id}/tracking_sleeps", params: params
+      end
+      it "should return friend's sleep activities from last week" do
+        expect(body_json.size).to eq 10
       end
     end
   end

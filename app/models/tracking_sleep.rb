@@ -3,7 +3,6 @@ class TrackingSleep < ApplicationRecord
 
   validates_presence_of :user_id, :start_time
   validate :end_time_greater_than_start_time
-  # validate :new_sleep
 
   before_save :update_period_attr
 

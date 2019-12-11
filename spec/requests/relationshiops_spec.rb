@@ -10,7 +10,7 @@ RSpec.describe 'Relationship API', type: :request do
     let(:params) {{follower_id: user_id, followed_id: friend.id}}
 
     context "when data is valid" do
-      before {post "/api/v1/users/#{user_id}/relationships", params}
+      before {post "/api/v1/users/#{user_id}/relationships", params: params}
       it "follows other user" do
         expect(body_json["message"]).to eq RelationshipService::FOLLOWED_MSG
       end
@@ -27,7 +27,7 @@ RSpec.describe 'Relationship API', type: :request do
 
       before do
         new_user.follow(other_friend)
-        post "/api/v1/users/#{new_user.id}/relationships", params
+        post "/api/v1/users/#{new_user.id}/relationships", params: params
       end
 
       it "should have status 400" do
@@ -48,7 +48,7 @@ RSpec.describe 'Relationship API', type: :request do
 
     context "when they are not followed to each other yet" do
       before do
-        delete "/api/v1/users/#{peter.id}/relationships", params
+        delete "/api/v1/users/#{peter.id}/relationships", params: params
       end
 
       it "should response status code 400" do
@@ -63,7 +63,7 @@ RSpec.describe 'Relationship API', type: :request do
     context "when data is valid" do
       before do
         peter.follow(mary)
-        delete "/api/v1/users/#{peter.id}/relationships", params
+        delete "/api/v1/users/#{peter.id}/relationships", params: params
       end
       it "follows other user" do
         expect(body_json["message"]).to eq RelationshipService::UNFOLLOWED_MSG

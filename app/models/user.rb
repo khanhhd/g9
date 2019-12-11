@@ -15,7 +15,6 @@ class User < ApplicationRecord
   enum status: [:awake, :sleeping]
   validates_presence_of :name
 
-
   def sleep
     return SLEEPING_MSG if self.sleeping? && self.tracking_sleeps.exists?
     ActiveRecord::Base.transaction do
